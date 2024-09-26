@@ -38,7 +38,7 @@
                 // Display sin and cos values
                 const sinValue = Math.sin(angleInRad);
                 ctx.fillStyle = SIN_COLOR;
-                ctx.font = `16px Arial`;
+                ctx.font = `Bold 16px Arial`;
                 ctx.fillText(`sin: ${sinValue.toFixed(2)}`, PX + 10, (centerY + PY) / 2);
             }
 
@@ -56,8 +56,10 @@
                 const secant = centerX + radius * (1 / Math.cos(angleInRad));
                 drawLine(secant, centerY, PX, PY, TAN_COLOR, 5);
                 ctx.fillStyle = TAN_COLOR;
-                ctx.font = '16px Arial';
-                ctx.fillText(`tan: ${Math.tan(angleInRad).toFixed(2)}`, secant - ((secant - secant) / 2), PY);
+                ctx.font = 'Bold 16px Arial';
+                const textX = centerX + (radius + 100) * Math.cos(angleInRad);
+                const textY = centerY + (radius + 100) * Math.sin(-angleInRad);
+                ctx.fillText(`tan: ${Math.tan(angleInRad).toFixed(2)}`, textX, textY);
             }
 
             function drawCotan(centerX, centerY, PX, PY, radius) {
@@ -67,8 +69,10 @@
                 drawLine(centerX, cosecant, PX, PY, COTAN_COLOR, 5);
 
                 ctx.fillStyle = COTAN_COLOR;
-                ctx.font = '16px Arial';
-                ctx.fillText(`Cotan: ${(1 / Math.tan(angleInRad)).toFixed(2)}`, PX, cosecant - ((cosecant - PY) / 2));
+                ctx.font = 'Bold 16px Arial';
+                const textX = centerX + (radius + 60) * Math.cos(angleInRad);
+                const textY = centerY + (radius + 60) * Math.sin(-angleInRad);
+                ctx.fillText(`Cotan: ${(1 / Math.tan(angleInRad)).toFixed(2)}`, textX, textY);
             }
 
             function drawSecant(centerX, centerY, radius) {
@@ -77,7 +81,7 @@
                 drawLine(centerX, centerY, secantLength, centerY, SECANT_COLOR, 5);
                 
                 ctx.fillStyle = SECANT_COLOR;
-                ctx.font = '16px Arial';
+                ctx.font = 'Bold 16px Arial';
                 ctx.fillText(`secant: ${secant.toFixed(2)}`, centerX - ((centerX - secantLength) / 2), centerY - 20);
             }
 
@@ -87,7 +91,7 @@
                 drawLine(centerX, centerY, centerX, cosecantLength, COSECANT_COLOR, 5);
 
                 ctx.fillStyle = COSECANT_COLOR;
-                ctx.font = '16px Arial';
+                ctx.font = 'Bold 16px Arial';
                 ctx.fillText(`cosecant: ${-cosecant.toFixed(2)}`, centerX + 20, centerY - ((centerY - cosecantLength) / 2));
             }
 
@@ -104,7 +108,7 @@
                 }
 
                 ctx.fillStyle = 'white';
-                ctx.font = '16px Arial';
+                ctx.font = 'Bold 16px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText(`${angleInDegrees.toFixed(2)} deg`, centerX + 100, centerY - 50);
             }
@@ -174,7 +178,7 @@
                 drawAngle(centerX, centerY, radius);
 
                 // Display some stats
-                ctx.font = 'bold 16px Arial';
+                ctx.font = 'Bold 16px Arial';
                 ctx.fillStyle = 'white';
                 ctx.textAlign = 'left';
                 ctx.fillText(`dx: ${dx.toFixed(2)}`, 10, 20);
@@ -188,7 +192,6 @@
                 ctx.fillText('Q3', 1 / 4 * canvas.width, 3 / 4 * canvas.height)
                 ctx.fillText('Q4', 3 / 4 * canvas.width, 3 / 4 * canvas.height)
 
-                ctx.restore();
                 window.requestAnimationFrame(render);
             }
 
