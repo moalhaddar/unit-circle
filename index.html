@@ -6,207 +6,225 @@
         <meta property="og:url" content="https://moalhaddar.github.io/unit-circle/">
         <meta property="og:image" content="https://moalhaddar.github.io/unit-circle/assets/og-image.png">
         <meta property="og:description" content="A unit circle visualizer to help understand the trigonometric functions.">
-    </head>
-    <script>
-        const SIN_COLOR = 'lightgreen';
-        const COS_COLOR = 'PaleVioletRed';
-        const TAN_COLOR = 'magenta';
-        const COTAN_COLOR = 'RoyalBlue';
-        const ANGLE_COLOR = 'Turquoise';
-        const SECANT_COLOR = 'Peru';
-        const COSECANT_COLOR = 'Plum';
-        window.onload = () => {
-            /** @type {HTMLCanvasElement} */
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            let mouseX = 0;
-            let mouseY = 0;
-            let angleInRad = 0;
-            let slope = 0;
-            let isAuto = false;
-
-            canvas.addEventListener('mousemove', (event) => {
-                mouseX = event.clientX;
-                mouseY = event.clientY;
-            });
-
-            document.addEventListener('keypress', (e) => {
-                if (e.key.toLowerCase() === 'm') {
-                    isAuto = !isAuto
-                }
-            })
-
-            function drawSin(centerX, centerY, PX, PY) {
-                drawLine(PX, centerY, PX, PY, SIN_COLOR, 5);
-
-                // Display sin and cos values
-                const sinValue = Math.sin(angleInRad);
-                ctx.fillStyle = SIN_COLOR;
-                ctx.font = `Bold 16px Arial`;
-                ctx.fillText(`sin: ${sinValue.toFixed(2)}`, PX + 10, (centerY + PY) / 2);
-            }
-
-            function drawCos(centerX, centerY, PX, PY) {
-                drawLine(centerX, PY, PX, PY, COS_COLOR, 5)
-
-                const cosValue = Math.cos(angleInRad);
-                ctx.fillStyle = COS_COLOR;
-                ctx.fillText(`cos: ${cosValue.toFixed(2)}`, (centerX + PX) / 2, PY + 20);
-            }
-
-            function drawTan(centerX, centerY, PX, PY, radius) {
-                // secant is the length of the x axis for the tangent line
-                // sec(theta) = 1 / cos(theta)
-                const secant = centerX + radius * (1 / Math.cos(angleInRad));
-                drawLine(secant, centerY, PX, PY, TAN_COLOR, 5);
-                ctx.fillStyle = TAN_COLOR;
-                ctx.font = 'Bold 16px Arial';
-                const textX = centerX + (radius + 100) * Math.cos(angleInRad);
-                const textY = centerY + (radius + 100) * Math.sin(-angleInRad);
-                ctx.fillText(`tan: ${Math.tan(angleInRad).toFixed(2)}`, textX, textY);
-            }
-
-            function drawCotan(centerX, centerY, PX, PY, radius) {
-                // cosecant is the length of the y axis for the cotangent line
-                // csc(theta) = 1 / sin(theta)
-                const cosecant = centerY + radius * (1 / Math.sin(-angleInRad));
-                drawLine(centerX, cosecant, PX, PY, COTAN_COLOR, 5);
-
-                ctx.fillStyle = COTAN_COLOR;
-                ctx.font = 'Bold 16px Arial';
-                const textX = centerX + (radius + 60) * Math.cos(angleInRad);
-                const textY = centerY + (radius + 60) * Math.sin(-angleInRad);
-                ctx.fillText(`Cotan: ${(1 / Math.tan(angleInRad)).toFixed(2)}`, textX, textY);
-            }
-
-            function drawSecant(centerX, centerY, radius) {
-                const secant = 1 / Math.cos(angleInRad);
-                const secantLength = centerX + radius * secant;
-                drawLine(centerX, centerY, secantLength, centerY, SECANT_COLOR, 5);
+        <script>
+            const SIN_COLOR = 'lightgreen';
+            const COS_COLOR = 'PaleVioletRed';
+            const TAN_COLOR = 'magenta';
+            const COTAN_COLOR = 'RoyalBlue';
+            const ANGLE_COLOR = 'Turquoise';
+            const SECANT_COLOR = 'Peru';
+            const COSECANT_COLOR = 'Plum';
+            window.onload = () => {
+                /** @type {HTMLCanvasElement} */
+                const canvas = document.getElementById("canvas");
+                const ctx = canvas.getContext("2d");
                 
-                ctx.fillStyle = SECANT_COLOR;
-                ctx.font = 'Bold 16px Arial';
-                ctx.fillText(`secant: ${secant.toFixed(2)}`, centerX - ((centerX - secantLength) / 2), centerY - 20);
-            }
-
-            function drawCosecant(centerX, centerY, radius) {
-                const cosecant = 1 / Math.sin(-angleInRad);
-                const cosecantLength = centerY + radius * cosecant;
-                drawLine(centerX, centerY, centerX, cosecantLength, COSECANT_COLOR, 5);
-
-                ctx.fillStyle = COSECANT_COLOR;
-                ctx.font = 'Bold 16px Arial';
-                ctx.fillText(`cosecant: ${-cosecant.toFixed(2)}`, centerX + 20, centerY - ((centerY - cosecantLength) / 2));
-            }
-
-            function drawAngle(centerX, centerY, radius) {
-                ctx.strokeStyle = ANGLE_COLOR;
-                ctx.beginPath();
-                    ctx.arc(centerX, centerY, radius / 5, 0, (2 * Math.PI) - angleInRad, true);
-                ctx.stroke();
-
-                // Display angle value
-                let angleInDegrees = (angleInRad * 180 / Math.PI)
-                if (angleInDegrees < 0) {
-                    angleInDegrees = 360 - (angleInDegrees * -1);
-                }
-
-                ctx.fillStyle = 'white';
-                ctx.font = 'Bold 16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${angleInDegrees.toFixed(2)} deg`, centerX + 100, centerY - 50);
-            }
-
-            function drawCircle(cx, cy, radius) {
-                ctx.strokeStyle = 'white';
-                ctx.beginPath();
-                    ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-            }
-
-            function clearBackground(color) {
-                ctx.fillStyle = color;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-
-            function drawLine(p1x, p1y, p2x, p2y, color, width = 1) {
-                ctx.lineWidth = width;
-                ctx.strokeStyle = color;
-                ctx.beginPath();
-                ctx.moveTo(p1x, p1y);
-                ctx.lineTo(p2x, p2y);
-                ctx.stroke();
-            }
-            
-            function render() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
-                const radius = 200;
-
-                const dx = mouseX - centerX;
-                const dy = -1 * (mouseY - centerY);
-
-                if (isAuto) {
-                    angleInRad = (angleInRad + 0.01) % 180;
-                    if (angleInRad >= Math.PI * 2) {
-                        angleInRad = 0;
+                
+                let mouseX = 0;
+                let mouseY = 0;
+                let angleInRad = 0;
+                let slope = 0;
+                let isAuto = false;
+    
+                canvas.addEventListener('mousemove', (event) => {
+                    mouseX = event.clientX;
+                    mouseY = event.clientY;
+                });
+    
+                document.addEventListener('keypress', (e) => {
+                    if (e.key.toLowerCase() === 'm') {
+                        isAuto = !isAuto
                     }
-                } else {
-                    angleInRad = Math.atan2(dy, dx);
+                })
+    
+                function drawSin(centerX, centerY, PX, PY) {
+                    drawLine(PX, centerY, PX, PY, SIN_COLOR, 5);
+    
+                    // Display sin and cos values
+                    const sinValue = Math.sin(angleInRad);
+                    ctx.fillStyle = SIN_COLOR;
+                    ctx.font = `Bold 16px Arial`;
+                    ctx.fillText(`sin: ${sinValue.toFixed(2)}`, PX + 10, (centerY + PY) / 2);
                 }
-
-                const PX = centerX + radius * Math.cos(angleInRad);
-                const PY = centerY + radius * Math.sin(-angleInRad);
-                const nextAngleInRad = angleInRad + 0.01;
-                const nextPX = centerX + radius * Math.cos(nextAngleInRad);
-                const nextPY = centerY + radius * Math.sin(-nextAngleInRad);
-                slope = (nextPY - PY) / (nextPX - PX);
-
-
-                clearBackground('black');
-                drawCircle(centerX, centerY, radius);
-                drawLine(0, centerY, canvas.width, centerY, 'white', 2); // x axis
-                drawLine(centerX, 0, centerX, canvas.height, 'white', 2); // y axis
-                drawLine(centerX, 0, centerX, canvas.height, 'white', 2); // y axis
-                drawLine(centerX, centerY, PX, PY, 'white', 2) // P line
-
-                drawSin(centerX, centerY, PX, PY);
-                drawCos(centerX, centerY, PX, PY);
-                drawTan(centerX, centerY, PX, PY, radius);
-                drawCotan(centerX, centerY, PX, PY, radius);
-                drawSecant(centerX, centerY, radius);
-                drawCosecant(centerX, centerY, radius);
-                drawAngle(centerX, centerY, radius);
-
-                // Display some stats
-                ctx.font = 'Bold 16px Arial';
-                ctx.fillStyle = 'white';
-                ctx.textAlign = 'left';
-                ctx.fillText(`dx: ${dx.toFixed(2)}`, 10, 20);
-                ctx.fillText(`dy: ${dy.toFixed(2)}`, 10, 40);
-                ctx.fillText(`Px: ${PX.toFixed(2)}`, 10, 60);
-                ctx.fillText(`Py: ${PY.toFixed(2)}`, 10, 80);
-                ctx.fillText(`angle: ${angleInRad.toFixed(2)}`, 10, 100);
-                ctx.fillText(`Tan slope: ${slope.toFixed(2)}`, 10, 120);
-                ctx.fillText('Q1', 3 / 4 * canvas.width, 1 / 4 * canvas.height)
-                ctx.fillText('Q2', 1 / 4 * canvas.width, 1 / 4 * canvas.height)
-                ctx.fillText('Q3', 1 / 4 * canvas.width, 3 / 4 * canvas.height)
-                ctx.fillText('Q4', 3 / 4 * canvas.width, 3 / 4 * canvas.height)
-
+    
+                function drawCos(centerX, centerY, PX, PY) {
+                    drawLine(centerX, PY, PX, PY, COS_COLOR, 5)
+    
+                    const cosValue = Math.cos(angleInRad);
+                    ctx.fillStyle = COS_COLOR;
+                    ctx.fillText(`cos: ${cosValue.toFixed(2)}`, (centerX + PX) / 2, PY + 20);
+                }
+    
+                function drawTan(centerX, centerY, PX, PY, radius) {
+                    // secant is the length of the x axis for the tangent line
+                    // sec(theta) = 1 / cos(theta)
+                    const secant = centerX + radius * (1 / Math.cos(angleInRad));
+                    drawLine(secant, centerY, PX, PY, TAN_COLOR, 5);
+                    ctx.fillStyle = TAN_COLOR;
+                    ctx.font = 'Bold 16px Arial';
+                    const textX = centerX + (radius + 100) * Math.cos(angleInRad);
+                    const textY = centerY + (radius + 100) * Math.sin(-angleInRad);
+                    ctx.fillText(`tan: ${Math.tan(angleInRad).toFixed(2)}`, textX, textY);
+                }
+    
+                function drawCotan(centerX, centerY, PX, PY, radius) {
+                    // cosecant is the length of the y axis for the cotangent line
+                    // csc(theta) = 1 / sin(theta)
+                    const cosecant = centerY + radius * (1 / Math.sin(-angleInRad));
+                    drawLine(centerX, cosecant, PX, PY, COTAN_COLOR, 5);
+    
+                    ctx.fillStyle = COTAN_COLOR;
+                    ctx.font = 'Bold 16px Arial';
+                    const textX = centerX + (radius + 60) * Math.cos(angleInRad);
+                    const textY = centerY + (radius + 60) * Math.sin(-angleInRad);
+                    ctx.fillText(`Cotan: ${(1 / Math.tan(angleInRad)).toFixed(2)}`, textX, textY);
+                }
+    
+                function drawSecant(centerX, centerY, radius) {
+                    const secant = 1 / Math.cos(angleInRad);
+                    const secantLength = centerX + radius * secant;
+                    drawLine(centerX, centerY, secantLength, centerY, SECANT_COLOR, 5);
+                    
+                    ctx.fillStyle = SECANT_COLOR;
+                    ctx.font = 'Bold 16px Arial';
+                    ctx.fillText(`secant: ${secant.toFixed(2)}`, centerX - ((centerX - secantLength) / 2), centerY - 20);
+                }
+    
+                function drawCosecant(centerX, centerY, radius) {
+                    const cosecant = 1 / Math.sin(-angleInRad);
+                    const cosecantLength = centerY + radius * cosecant;
+                    drawLine(centerX, centerY, centerX, cosecantLength, COSECANT_COLOR, 5);
+    
+                    ctx.fillStyle = COSECANT_COLOR;
+                    ctx.font = 'Bold 16px Arial';
+                    ctx.fillText(`cosecant: ${-cosecant.toFixed(2)}`, centerX + 20, centerY - ((centerY - cosecantLength) / 2));
+                }
+    
+                function drawAngle(centerX, centerY, radius) {
+                    ctx.strokeStyle = ANGLE_COLOR;
+                    ctx.beginPath();
+                        ctx.arc(centerX, centerY, radius / 5, 0, (2 * Math.PI) - angleInRad, true);
+                    ctx.stroke();
+    
+                    // Display angle value
+                    let angleInDegrees = (angleInRad * 180 / Math.PI)
+                    if (angleInDegrees < 0) {
+                        angleInDegrees = 360 - (angleInDegrees * -1);
+                    }
+    
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'Bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${angleInDegrees.toFixed(2)} deg`, centerX + 100, centerY - 50);
+                }
+    
+                function drawCircle(cx, cy, radius) {
+                    ctx.strokeStyle = 'white';
+                    ctx.beginPath();
+                        ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+    
+                function clearBackground(color) {
+                    ctx.fillStyle = color;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+    
+                function drawLine(p1x, p1y, p2x, p2y, color, width = 1) {
+                    ctx.lineWidth = width;
+                    ctx.strokeStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(p1x, p1y);
+                    ctx.lineTo(p2x, p2y);
+                    ctx.stroke();
+                }
+                
+                function render() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+    
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2;
+                    const radius = 200;
+    
+                    const dx = mouseX - centerX;
+                    const dy = -1 * (mouseY - centerY);
+    
+                    if (isAuto) {
+                        angleInRad = (angleInRad + 0.01) % 180;
+                        if (angleInRad >= Math.PI * 2) {
+                            angleInRad = 0;
+                        }
+                    } else {
+                        angleInRad = Math.atan2(dy, dx);
+                    }
+    
+                    const PX = centerX + radius * Math.cos(angleInRad);
+                    const PY = centerY + radius * Math.sin(-angleInRad);
+                    const nextAngleInRad = angleInRad + 0.01;
+                    const nextPX = centerX + radius * Math.cos(nextAngleInRad);
+                    const nextPY = centerY + radius * Math.sin(-nextAngleInRad);
+                    slope = (nextPY - PY) / (nextPX - PX);
+    
+    
+                    clearBackground('black');
+                    drawCircle(centerX, centerY, radius);
+                    drawLine(0, centerY, canvas.width, centerY, 'white', 2); // x axis
+                    drawLine(centerX, 0, centerX, canvas.height, 'white', 2); // y axis
+                    drawLine(centerX, 0, centerX, canvas.height, 'white', 2); // y axis
+                    drawLine(centerX, centerY, PX, PY, 'white', 2) // P line
+    
+                    drawSin(centerX, centerY, PX, PY);
+                    drawCos(centerX, centerY, PX, PY);
+                    drawTan(centerX, centerY, PX, PY, radius);
+                    drawCotan(centerX, centerY, PX, PY, radius);
+                    drawSecant(centerX, centerY, radius);
+                    drawCosecant(centerX, centerY, radius);
+                    drawAngle(centerX, centerY, radius);
+    
+                    // Display some stats
+                    ctx.font = 'Bold 16px Arial';
+                    ctx.fillStyle = 'white';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`dx: ${dx.toFixed(2)}`, 10, 20);
+                    ctx.fillText(`dy: ${dy.toFixed(2)}`, 10, 40);
+                    ctx.fillText(`Px: ${PX.toFixed(2)}`, 10, 60);
+                    ctx.fillText(`Py: ${PY.toFixed(2)}`, 10, 80);
+                    ctx.fillText(`angle: ${angleInRad.toFixed(2)}`, 10, 100);
+                    ctx.fillText(`Tan slope: ${slope.toFixed(2)}`, 10, 120);
+                    ctx.fillText('Q1', 3 / 4 * canvas.width, 1 / 4 * canvas.height)
+                    ctx.fillText('Q2', 1 / 4 * canvas.width, 1 / 4 * canvas.height)
+                    ctx.fillText('Q3', 1 / 4 * canvas.width, 3 / 4 * canvas.height)
+                    ctx.fillText('Q4', 3 / 4 * canvas.width, 3 / 4 * canvas.height)
+    
+                    window.requestAnimationFrame(render);
+                }
+    
                 window.requestAnimationFrame(render);
             }
+        </script>
+        <style>
+            #github {
+                position: absolute;
+                color: black;
+                bottom: 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background-color: rgb(181, 181, 181);
+                padding: 5px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
 
-            window.requestAnimationFrame(render);
-        }
-    </script>
     <body style="margin: 0; overflow: hidden;">
+        <a id="github" href="https://github.com/moalhaddar/unit-circle" target="_blank">
+            <img src="https://github.com/favicon.ico" alt="GitHub logo" width="25">
+            Github Repository
+        </a>
         <canvas id="canvas"></canvas>
     </body>
 </html>
