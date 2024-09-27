@@ -25,7 +25,6 @@
                 let mouseX = 0;
                 let mouseY = 0;
                 let angleInRad = 0;
-                let slope = 0;
                 let isAuto = false;
     
                 canvas.addEventListener('mousemove', (event) => {
@@ -163,10 +162,6 @@
     
                     const PX = centerX + radius * Math.cos(angleInRad);
                     const PY = centerY + radius * Math.sin(-angleInRad);
-                    const nextAngleInRad = angleInRad + 0.01;
-                    const nextPX = centerX + radius * Math.cos(nextAngleInRad);
-                    const nextPY = centerY + radius * Math.sin(-nextAngleInRad);
-                    slope = (nextPY - PY) / (nextPX - PX);
     
     
                     clearBackground('black');
@@ -188,12 +183,7 @@
                     ctx.font = 'Bold 16px Arial';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'left';
-                    ctx.fillText(`dx: ${dx.toFixed(2)}`, 10, 20);
-                    ctx.fillText(`dy: ${dy.toFixed(2)}`, 10, 40);
-                    ctx.fillText(`Px: ${PX.toFixed(2)}`, 10, 60);
-                    ctx.fillText(`Py: ${PY.toFixed(2)}`, 10, 80);
                     ctx.fillText(`angle: ${angleInRad.toFixed(2)}`, 10, 100);
-                    ctx.fillText(`Tan slope: ${slope.toFixed(2)}`, 10, 120);
                     ctx.fillText('Q1', 3 / 4 * canvas.width, 1 / 4 * canvas.height)
                     ctx.fillText('Q2', 1 / 4 * canvas.width, 1 / 4 * canvas.height)
                     ctx.fillText('Q3', 1 / 4 * canvas.width, 3 / 4 * canvas.height)
