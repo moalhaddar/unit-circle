@@ -12,9 +12,23 @@
             const TAN_COLOR = 'magenta';
             const COTAN_COLOR = 'RoyalBlue';
             const ANGLE_COLOR = 'Turquoise';
-            const SECANT_COLOR = 'Peru';
-            const COSECANT_COLOR = 'Plum';
+            const SECANT_COLOR = 'orange';
+            const COSECANT_COLOR = 'DarkMagenta';
+            const VALUE_FONT = 'Bold 25px Almarai';
             window.onload = () => {
+                const sinCheckbox = document.getElementsByName("sin")[0];
+                const cosCheckbox = document.getElementsByName("cos")[0];
+                const tanCheckbox = document.getElementsByName("tan")[0];
+                const cotanCheckbox = document.getElementsByName("cotan")[0];
+                const secantCheckbox = document.getElementsByName("secant")[0];
+                const cosecantCheckbox = document.getElementsByName("cosecant")[0];
+                
+                sinCheckbox.checked = true;
+                cosCheckbox.checked = true;
+                tanCheckbox.checked = true;
+                cotanCheckbox.checked = true;
+                secantCheckbox.checked = true;
+                cosecantCheckbox.checked = true;
                 /** @type {HTMLCanvasElement} */
                 const canvas = document.getElementById("canvas");
                 const ctx = canvas.getContext("2d");
@@ -25,7 +39,7 @@
                 let mouseX = 0;
                 let mouseY = 0;
                 let angleInRad = 0;
-                let isAuto = false;
+                let isAuto = true;
     
                 canvas.addEventListener('mousemove', (event) => {
                     mouseX = event.clientX;
@@ -39,69 +53,82 @@
                 })
     
                 function drawSin(centerX, centerY, PX, PY) {
+                    ctx.save();
                     drawLine(PX, centerY, PX, PY, SIN_COLOR, 5);
-    
                     // Display sin and cos values
                     const sinValue = Math.sin(angleInRad);
                     ctx.fillStyle = SIN_COLOR;
-                    ctx.font = `Bold 16px Arial`;
+                    ctx.font = VALUE_FONT;
                     ctx.fillText(`sin: ${sinValue.toFixed(2)}`, PX + 10, (centerY + PY) / 2);
+                    ctx.restore();
                 }
     
                 function drawCos(centerX, centerY, PX, PY) {
+                    ctx.save();
                     drawLine(centerX, PY, PX, PY, COS_COLOR, 5)
     
                     const cosValue = Math.cos(angleInRad);
                     ctx.fillStyle = COS_COLOR;
+                    ctx.font = VALUE_FONT;
                     ctx.fillText(`cos: ${cosValue.toFixed(2)}`, (centerX + PX) / 2, PY + 20);
+                    ctx.restore();
                 }
     
                 function drawTan(centerX, centerY, PX, PY, radius) {
+                    ctx.save();
                     // secant is the length of the x axis for the tangent line
                     // sec(theta) = 1 / cos(theta)
                     const secant = centerX + radius * (1 / Math.cos(angleInRad));
                     drawLine(secant, centerY, PX, PY, TAN_COLOR, 5);
                     ctx.fillStyle = TAN_COLOR;
-                    ctx.font = 'Bold 16px Arial';
+                    ctx.font = VALUE_FONT;
                     const textX = centerX + (radius + 100) * Math.cos(angleInRad);
                     const textY = centerY + (radius + 100) * Math.sin(-angleInRad);
                     ctx.fillText(`tan: ${Math.tan(angleInRad).toFixed(2)}`, textX, textY);
+                    ctx.restore();
                 }
     
                 function drawCotan(centerX, centerY, PX, PY, radius) {
+                    ctx.save();
                     // cosecant is the length of the y axis for the cotangent line
                     // csc(theta) = 1 / sin(theta)
                     const cosecant = centerY + radius * (1 / Math.sin(-angleInRad));
                     drawLine(centerX, cosecant, PX, PY, COTAN_COLOR, 5);
     
                     ctx.fillStyle = COTAN_COLOR;
-                    ctx.font = 'Bold 16px Arial';
+                    ctx.font = VALUE_FONT;
                     const textX = centerX + (radius + 60) * Math.cos(angleInRad);
                     const textY = centerY + (radius + 60) * Math.sin(-angleInRad);
                     ctx.fillText(`Cotan: ${(1 / Math.tan(angleInRad)).toFixed(2)}`, textX, textY);
+                    ctx.restore();
                 }
     
                 function drawSecant(centerX, centerY, radius) {
+                    ctx.save();
                     const secant = 1 / Math.cos(angleInRad);
                     const secantLength = centerX + radius * secant;
                     drawLine(centerX, centerY, secantLength, centerY, SECANT_COLOR, 5);
                     
                     ctx.fillStyle = SECANT_COLOR;
-                    ctx.font = 'Bold 16px Arial';
+                    ctx.font = VALUE_FONT;
                     ctx.fillText(`secant: ${secant.toFixed(2)}`, centerX - ((centerX - secantLength) / 2), centerY - 20);
+                    ctx.restore();
                 }
     
                 function drawCosecant(centerX, centerY, radius) {
+                    ctx.save();
                     const cosecant = 1 / Math.sin(-angleInRad);
                     const cosecantLength = centerY + radius * cosecant;
                     drawLine(centerX, centerY, centerX, cosecantLength, COSECANT_COLOR, 5);
     
                     ctx.fillStyle = COSECANT_COLOR;
-                    ctx.font = 'Bold 16px Arial';
+                    ctx.font = VALUE_FONT;
                     ctx.fillText(`cosecant: ${-cosecant.toFixed(2)}`, centerX + 20, centerY - ((centerY - cosecantLength) / 2));
+                    ctx.restore();
                 }
     
                 function drawAngle(centerX, centerY, radius) {
+                    ctx.save();
                     ctx.strokeStyle = ANGLE_COLOR;
                     ctx.beginPath();
                         ctx.arc(centerX, centerY, radius / 5, 0, (2 * Math.PI) - angleInRad, true);
@@ -117,27 +144,34 @@
                     ctx.font = 'Bold 16px Arial';
                     ctx.textAlign = 'center';
                     ctx.fillText(`${angleInDegrees.toFixed(2)} deg`, centerX + 100, centerY - 50);
+                    ctx.restore();
                 }
     
                 function drawCircle(cx, cy, radius) {
+                    ctx.save();
                     ctx.strokeStyle = 'white';
                     ctx.beginPath();
                         ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
                     ctx.stroke();
+                    ctx.restore();
                 }
     
                 function clearBackground(color) {
+                    ctx.save();
                     ctx.fillStyle = color;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.restore();
                 }
     
                 function drawLine(p1x, p1y, p2x, p2y, color, width = 1) {
+                    ctx.save();
                     ctx.lineWidth = width;
                     ctx.strokeStyle = color;
                     ctx.beginPath();
                     ctx.moveTo(p1x, p1y);
                     ctx.lineTo(p2x, p2y);
                     ctx.stroke();
+                    ctx.restore();
                 }
                 
                 function render() {
@@ -171,19 +205,19 @@
                     drawLine(centerX, 0, centerX, canvas.height, 'white', 2); // y axis
                     drawLine(centerX, centerY, PX, PY, 'white', 2) // P line
     
-                    drawSin(centerX, centerY, PX, PY);
-                    drawCos(centerX, centerY, PX, PY);
-                    drawTan(centerX, centerY, PX, PY, radius);
-                    drawCotan(centerX, centerY, PX, PY, radius);
-                    drawSecant(centerX, centerY, radius);
-                    drawCosecant(centerX, centerY, radius);
+                    if (sinCheckbox.checked) drawSin(centerX, centerY, PX, PY);
+                    if (cosCheckbox.checked) drawCos(centerX, centerY, PX, PY);
+                    if (tanCheckbox.checked) drawTan(centerX, centerY, PX, PY, radius);
+                    if (cotanCheckbox.checked) drawCotan(centerX, centerY, PX, PY, radius);
+                    if (secantCheckbox.checked) drawSecant(centerX, centerY, radius);
+                    if (cosecantCheckbox.checked) drawCosecant(centerX, centerY, radius);
                     drawAngle(centerX, centerY, radius);
     
-                    // Display some stats
-                    ctx.font = 'Bold 16px Arial';
+                    ctx.font = 'Bold 32px Almarai';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'left';
-                    ctx.fillText(`angle: ${angleInRad.toFixed(2)}`, 10, 100);
+                    ctx.fillText('Press [M] to toggle auto / manual rotation', 20, 100);
+                    ctx.fillText(`Mode: ${isAuto ? 'Auto' : 'Manual'}`, 20, 50);
                     ctx.fillText('Q1', 3 / 4 * canvas.width, 1 / 4 * canvas.height)
                     ctx.fillText('Q2', 1 / 4 * canvas.width, 1 / 4 * canvas.height)
                     ctx.fillText('Q3', 1 / 4 * canvas.width, 3 / 4 * canvas.height)
@@ -216,6 +250,23 @@
                 text-decoration: none;
                 border-top-right-radius: 10px;
             }
+
+            #controls {
+                position: absolute;
+                color: white;
+                font-size: 32px;
+                top: 150px;
+                left: 20px;
+            }
+            input[type=checkbox] {
+                transform: scale(2);
+            }
+            .control {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+            }
         </style>
     </head>
 
@@ -224,6 +275,32 @@
             <img src="https://github.com/favicon.ico" alt="GitHub logo" width="25">
             Github Repository.
         </a>
+        <div id="controls">
+            <div class="control">
+                <input name="sin" type="checkbox" />
+                <label for="sin">sin</label>
+            </div>
+            <div class="control">
+                <input name="cos" type="checkbox" />
+                <label for="cos">cos</label>
+            </div>
+            <div class="control">
+                <input name="tan" type="checkbox" />
+                <label for="tan">tan</label>
+            </div>
+            <div class="control">
+                <input name="cotan" type="checkbox" />
+                <label for="cotan">cotan</label>
+            </div>
+            <div class="control">
+                <input name="secant" type="checkbox" />
+                <label for="secant">secant</label>
+            </div>
+            <div class="control">
+                <input name="cosecant" type="checkbox" />
+                <label for="cosecant">cosecant</label>
+            </div>
+        </div>
         <canvas id="canvas"></canvas>
     </body>
 </html>
