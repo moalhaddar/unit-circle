@@ -1,4 +1,8 @@
 # Unit Circle Visualizer
+| ![](./assets/header.png) |
+|:--:|
+| _It's all about circles._ |
+
 This project is an educational project that aims to strengthen the understadning behind the unit cirle and the trigonometric functions (sin, cos, tan, cot, csc) by programatically drawing the trig functions inside an HTML canvas and visualizing them.
 
 # Demo
